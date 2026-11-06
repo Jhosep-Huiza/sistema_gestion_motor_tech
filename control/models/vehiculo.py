@@ -11,7 +11,7 @@ class Vehiculo(models.Model):
     placa = models.CharField(max_length=10, unique=True)
     marca = models.CharField(max_length=50)
     modelo = models.CharField(max_length=50)
-    año = models.PositiveIntegerField()
+    anio = models.PositiveIntegerField()
     color = models.CharField(max_length=30)
     kilometraje = models.PositiveIntegerField()
 
