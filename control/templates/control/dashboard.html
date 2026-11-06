@@ -1,0 +1,50 @@
+{% extends "control/base.html" %}{% block title %}Dashboard | MotorTech{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div><span class="eyebrow">RESUMEN GENERAL</span>
+        <h1>Dashboard</h1>
+        <p>Panel de control de MotorTech Service.</p>
+    </div>
+</div>
+<section class="stats">
+    <div class="stat"><span>Clientes</span><strong>{{ total_clientes }}</strong><a
+            href="{% url 'listado' 'clientes' %}">Ver registros →</a></div>
+    <div class="stat"><span>Vehículos</span><strong>{{ total_vehiculos }}</strong><a
+            href="{% url 'listado' 'vehiculos' %}">Ver registros →</a></div>
+    <div class="stat"><span>Citas</span><strong>{{ total_citas }}</strong><a href="{% url 'listado' 'citas' %}">Ver
+            registros →</a></div>
+    <div class="stat"><span>Diagnósticos</span><strong>{{ total_diagnosticos }}</strong><a
+            href="{% url 'listado' 'diagnosticos' %}">Ver registros →</a></div>
+    <div class="stat"><span>Órdenes</span><strong>{{ total_ordenes }}</strong><a
+            href="{% url 'listado' 'ordenes' %}">Ver registros →</a></div>
+</section>
+<section class="panel">
+    <div class="section-title">
+        <h2>Últimas órdenes de servicio</h2><a href="{% url 'listado' 'ordenes' %}">Ver todas</a>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>N.º</th>
+                    <th>Vehículo</th>
+                    <th>Trabajo</th>
+                    <th>Estado</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for orden in ultimas_ordenes %}<tr>
+                    <td>#{{ orden.id }}</td>
+                    <td>{{ orden.diagnostico.cita.vehiculo.placa }}</td>
+                    <td>{{ orden.descripcion_trabajo|truncatechars:45 }}</td>
+                    <td>{{ orden.estado }}</td>
+                    <td>S/ {{ orden.costo_total }}</td>
+                </tr>{% empty %}<tr>
+                    <td colspan="5" class="empty">Aún no hay órdenes registradas.</td>
+                </tr>{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

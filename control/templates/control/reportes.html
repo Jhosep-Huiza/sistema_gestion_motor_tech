@@ -1,0 +1,86 @@
+{% extends "control/base.html" %}{% block title %}Reportes | MotorTech{% endblock %}
+{% block content %}<div class="page-heading no-print">
+    <div><span class="eyebrow">CONSULTAS</span>
+        <h1>Reportes</h1>
+        <p>Filtra y genera reportes de las operaciones del taller.</p>
+    </div><button class="btn primary" onclick="window.print()">Imprimir / Guardar PDF</button>
+</div>
+<section class="panel no-print">
+    <form method="get" class="report-filters">
+        <div class="field"><label>Tipo de reporte</label><select name="tipo">
+                <option value="citas" {% if tipo == 'citas' %}selected{% endif %}>Citas</option>
+                <option value="diagnosticos" {% if tipo == 'diagnosticos' %}selected{% endif %}>Diagnósticos</option>
+                <option value="ordenes" {% if tipo == 'ordenes' %}selected{% endif %}>Órdenes</option>
+            </select></div>
+        <div class="field"><label>Desde</label><input type="date" name="desde" value="{{ desde }}"></div>
+        <div class="field"><label>Hasta</label><input type="date" name="hasta" value="{{ hasta }}"></div><button
+            class="btn dark">Filtrar</button>
+    </form>
+</section>
+<section class="panel print-panel">
+    <div class="print-heading">
+        <h1>MotorTech Service</h1>
+        <h2>Reporte de {{ titulo }}</h2>
+        <p>Periodo: {{ desde|default:"Sin inicio" }} al {{ hasta|default:"Sin fin" }}</p>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                {% if tipo == 'citas' %}<tr>
+                    <th>Fecha y hora</th>
+                    <th>Vehículo</th>
+                    <th>Cliente</th>
+                    <th>Mecánico</th>
+                    <th>Motivo</th>
+                    <th>Estado</th>
+                </tr>
+                {% elif tipo == 'diagnosticos' %}<tr>
+                    <th>Fecha</th>
+                    <th>Vehículo</th>
+                    <th>Cliente</th>
+                    <th>Mecánico</th>
+                    <th>Problema</th>
+                    <th>Costo estimado</th>
+                </tr>
+                {% else %}<tr>
+                    <th>Orden</th>
+                    <th>Vehículo</th>
+                    <th>Cliente</th>
+                    <th>Mecánico</th>
+                    <th>Trabajo</th>
+                    <th>Repuesto</th>
+                    <th>Cantidad</th>
+                    <th>Mano de obra</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                </tr>{% endif %}
+            </thead>
+            <tbody>{% for r in registros %}<tr>
+                    {% if tipo == 'citas' %}<td>{{ r.fecha }} {{ r.hora }}</td>
+                    <td>{{ r.vehiculo.placa }} {{ r.vehiculo.marca }}</td>
+                    <td>{{ r.vehiculo.cliente }}</td>
+                    <td>{{ r.mecanico }}</td>
+                    <td>{{ r.motivo }}</td>
+                    <td>{{ r.estado }}</td>
+                    {% elif tipo == 'diagnosticos' %}<td>{{ r.fecha }}</td>
+                    <td>{{ r.cita.vehiculo.placa }}</td>
+                    <td>{{ r.cita.vehiculo.cliente }}</td>
+                    <td>{{ r.cita.mecanico }}</td>
+                    <td>{{ r.descripcion_problema }}</td>
+                    <td>S/ {{ r.costo_estimado }}</td>
+                    {% else %}<td>#{{ r.id }}</td>
+                    <td>{{ r.diagnostico.cita.vehiculo.placa }}</td>
+                    <td>{{ r.diagnostico.cita.vehiculo.cliente }}</td>
+                    <td>{{ r.diagnostico.cita.mecanico }}</td>
+                    <td>{{ r.descripcion_trabajo }}</td>
+                    <td>{{ r.repuesto.nombre }}</td>
+                    <td>{{ r.cantidad_repuesto }}</td>
+                    <td>S/ {{ r.costo_mano_obra }}</td>
+                    <td>S/ {{ r.costo_total }}</td>
+                    <td>{{ r.estado }}</td>{% endif %}
+                </tr>{% empty %}<tr>
+                    <td colspan="10" class="empty">No hay datos para los filtros seleccionados.</td>
+                </tr>{% endfor %}</tbody>
+        </table>
+    </div>
+</section>{% endblock %}

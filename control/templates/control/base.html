@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}MotorTech Service{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'control/css/style.css' %}">
+  <link rel="icon" href="{% static 'control/img/logo_motortech.png' %}" type="image/png">
+</head>
+
+<body>
+  {% if user.is_authenticated %}
+    <header class="topbar">
+      <a class="brand" href="{% url 'dashboard' %}">MOTORTECH <span>SERVICE</span></a>
+      <nav>
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+        <a href="{% url 'reportes' %}">Reportes</a>
+        <form method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button class="link-button">Cerrar sesión</button>
+        </form>
+      </nav>
+    </header>
+    <div class="layout">
+      <aside class="sidebar">
+        <p>GESTIÓN</p>
+        {% for slug, label in menu %}
+          <a href="{% url 'listado' slug %}">{{ label }}</a>
+        {% endfor %}
+        <a href="{% url 'reportes' %}">Reportes</a>
+      </aside>
+      <main class="content">
+  {% else %}
+    <main class="auth-wrapper">
+  {% endif %}
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+
+      {% block content %}{% endblock %}
+
+      </main>
+  {% if user.is_authenticated %}
+    </div>
+  {% endif %}
+
+  <script src="{% static 'control/js/app.js' %}"></script>
+</body>
+
+</html>
