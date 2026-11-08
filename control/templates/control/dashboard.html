@@ -1,50 +1,95 @@
-{% extends "control/base.html" %}{% block title %}Dashboard | MotorTech{% endblock %}
-{% block content %}
-<div class="page-heading">
-    <div><span class="eyebrow">RESUMEN GENERAL</span>
-        <h1>Dashboard</h1>
-        <p>Panel de control de MotorTech Service.</p>
-    </div>
+{% extends "control/base.html" %} {% block title %}Dashboard | MotorTech
+Service{% endblock %} {% block app_content %}
+<div class="page-heading dashboard-heading">
+  <div>
+    <span class="eyebrow">CENTRO DE CONTROL / RESUMEN</span>
+    <h1>Panel de control</h1>
+    <p>
+      Bienvenido a MotorTech Service. Aquí tienes el estado general del taller.
+    </p>
+  </div>
+  <div class="heading-chip">
+    <span class="status-pulse"></span> SISTEMA OPERATIVO
+  </div>
 </div>
 <section class="stats">
-    <div class="stat"><span>Clientes</span><strong>{{ total_clientes }}</strong><a
-            href="{% url 'listado' 'clientes' %}">Ver registros →</a></div>
-    <div class="stat"><span>Vehículos</span><strong>{{ total_vehiculos }}</strong><a
-            href="{% url 'listado' 'vehiculos' %}">Ver registros →</a></div>
-    <div class="stat"><span>Citas</span><strong>{{ total_citas }}</strong><a href="{% url 'listado' 'citas' %}">Ver
-            registros →</a></div>
-    <div class="stat"><span>Diagnósticos</span><strong>{{ total_diagnosticos }}</strong><a
-            href="{% url 'listado' 'diagnosticos' %}">Ver registros →</a></div>
-    <div class="stat"><span>Órdenes</span><strong>{{ total_ordenes }}</strong><a
-            href="{% url 'listado' 'ordenes' %}">Ver registros →</a></div>
+  <article class="stat stat-red">
+    <div class="stat-top">
+      <span>Clientes</span><span class="stat-icon">♙</span>
+    </div>
+    <strong>{{ total_clientes }}</strong
+    ><a href="{% url 'listado' 'clientes' %}">Gestionar clientes <b>→</b></a>
+  </article>
+  <article class="stat">
+    <div class="stat-top">
+      <span>Vehículos</span><span class="stat-icon">▰</span>
+    </div>
+    <strong>{{ total_vehiculos }}</strong
+    ><a href="{% url 'listado' 'vehiculos' %}">Ver vehículos <b>→</b></a>
+  </article>
+  <article class="stat">
+    <div class="stat-top">
+      <span>Citas</span><span class="stat-icon">▦</span>
+    </div>
+    <strong>{{ total_citas }}</strong
+    ><a href="{% url 'listado' 'citas' %}">Ver citas <b>→</b></a>
+  </article>
+  <article class="stat">
+    <div class="stat-top">
+      <span>Diagnósticos</span><span class="stat-icon">⌕</span>
+    </div>
+    <strong>{{ total_diagnosticos }}</strong
+    ><a href="{% url 'listado' 'diagnosticos' %}">Ver diagnósticos <b>→</b></a>
+  </article>
+  <article class="stat">
+    <div class="stat-top">
+      <span>Órdenes</span><span class="stat-icon">▤</span>
+    </div>
+    <strong>{{ total_ordenes }}</strong
+    ><a href="{% url 'listado' 'ordenes' %}">Ver órdenes <b>→</b></a>
+  </article>
 </section>
-<section class="panel">
-    <div class="section-title">
-        <h2>Últimas órdenes de servicio</h2><a href="{% url 'listado' 'ordenes' %}">Ver todas</a>
+<section class="panel dashboard-panel">
+  <div class="section-title">
+    <div>
+      <span class="eyebrow">ACTIVIDAD RECIENTE</span>
+      <h2>Últimas órdenes de servicio</h2>
     </div>
-    <div class="table-wrap">
-        <table>
-            <thead>
-                <tr>
-                    <th>N.º</th>
-                    <th>Vehículo</th>
-                    <th>Trabajo</th>
-                    <th>Estado</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for orden in ultimas_ordenes %}<tr>
-                    <td>#{{ orden.id }}</td>
-                    <td>{{ orden.diagnostico.cita.vehiculo.placa }}</td>
-                    <td>{{ orden.descripcion_trabajo|truncatechars:45 }}</td>
-                    <td>{{ orden.estado }}</td>
-                    <td>S/ {{ orden.costo_total }}</td>
-                </tr>{% empty %}<tr>
-                    <td colspan="5" class="empty">Aún no hay órdenes registradas.</td>
-                </tr>{% endfor %}
-            </tbody>
-        </table>
-    </div>
+    <a class="btn btn-outline" href="{% url 'listado' 'ordenes' %}"
+      >Ver todas <span>→</span></a
+    >
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>N.º de orden</th>
+          <th>Vehículo</th>
+          <th>Trabajo realizado</th>
+          <th>Estado</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for orden in ultimas_ordenes %}
+        <tr>
+          <td><span class="order-number">#{{ orden.id }}</span></td>
+          <td><strong>{{ orden.diagnostico.cita.vehiculo.placa }}</strong></td>
+          <td>{{ orden.descripcion_trabajo|truncatechars:45 }}</td>
+          <td><span class="status-label">{{ orden.estado }}</span></td>
+          <td class="money">S/ {{ orden.costo_total }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" class="empty">
+            <span class="empty-icon">▤</span
+            ><strong>Aún no hay órdenes registradas</strong
+            ><small>Las órdenes de servicio recientes aparecerán aquí.</small>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </section>
 {% endblock %}
